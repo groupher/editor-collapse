@@ -1,10 +1,11 @@
 ![](https://badgen.net/badge/Editor.js/v2.0/blue)
 
-# Delimiter Tool for Editor.js
+# Collapse Tool for Editor.js
 
 Delimiter Tool for the [Editor.js](https://editorjs.io).
 
-![image](https://user-images.githubusercontent.com/6184465/65581160-93971880-dfad-11e9-976b-c28873d6de6a.png)
+![collapse-demo](https://user-images.githubusercontent.com/6184465/69914380-c7476080-147e-11ea-8096-309eb5237038.gif)
+
 
 ## Installation
 
@@ -13,13 +14,13 @@ Delimiter Tool for the [Editor.js](https://editorjs.io).
 Get the package
 
 ```shell
-npm i --save-dev @editorjs/delimiter
+npm i --save-dev @groupher/editor-collapse
 ```
 
 Include module at your application
 
 ```javascript
-const Delimiter = require('@editorjs/delimiter');
+const Collapse = require('@groupher/editor-collapse');
 ```
 
 ### Download to your project's source dir
@@ -27,17 +28,6 @@ const Delimiter = require('@editorjs/delimiter');
 1. Upload folder `dist` from repository
 2. Add `dist/bundle.js` file to your page.
 
-### Load from CDN
-
-You can load specific version of package from [jsDelivr CDN](https://www.jsdelivr.com/package/npm/@editorjs/delimiter).
-
-`https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.0.1`
-
-Require this script on a page with Editor.js.
-
-```html
-<script src="..."></script>
-```
 
 ## Usage
 
@@ -49,7 +39,7 @@ var editor = EditorJS({
   
   tools: {
     ...
-    delimiter: Delimiter,
+    collapse: Collapse,
   }
   
   ...
@@ -62,12 +52,15 @@ This Tool has no config params
 
 ## Output data
 
-This Tool returns empty object.
+This Tool returns data object.
 
 ```json
 {
-    "type" : "delimiter",
-    "data" : {}
+    "type" : "collapse",
+    "data" : {
+      title: "",
+      content: "",
+    }
 }
 ```
 
