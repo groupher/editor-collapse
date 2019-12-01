@@ -1,7 +1,63 @@
 .cdx-collapse {
-  line-height: 1.6em;
   width: 100%;
-  height: 120px;
+}
+
+.wrap-collabsible {
+  margin-bottom: 1.2rem 0;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.cdx-collapse-toggle {
+  display: block;
+  padding: 14px 25px;
+  color: black;
   background: #f7f7f7;
-  margin-bottom: 20px;
+  transition: all 0.25s ease-out;
+  cursor: pointer;
+}
+
+.cdx-collapse-toggle::before {
+  content: " ";
+  display: inline-block;
+
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid currentColor;
+  vertical-align: middle;
+  margin-right: 15px;
+  transform: translateY(-1px);
+
+  transition: transform 0.3s ease-out;
+}
+
+.toggle:checked + .cdx-collapse-toggle::before {
+  transform: rotate(90deg) translateX(-1px);
+}
+
+.collapsible-content {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.25s ease-in-out;
+}
+
+.toggle:checked + .cdx-collapse-toggle + .collapsible-content {
+  max-height: 350px;
+}
+
+.toggle:checked + .cdx-collapse-toggle {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  font-weight: bold;
+  color: black;
+}
+
+.collapsible-content .content-inner {
+  background: #f7f7f7;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  padding: 16px 24px;
+  line-height: 1.6em;
 }

@@ -60,14 +60,77 @@ export default class Collapse {
   }
 
   /**
+   * generate uniq string
+   *
+   * @param {number: number, prefix: string}
+   * @return {string}
+   * @private
+   */
+  randomStr(length, prefix = "collapse_") {
+    var result = "";
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return prefix + result;
+  }
+
+  /**
    * Create Tool's view
    * @return {HTMLElement}
    * @private
    */
   drawView() {
-    const wrapper = this._make("DIV", [this._CSS.block, this._CSS.wrapper]);
+    const Wrapper = this._make("DIV", [this._CSS.block, this._CSS.wrapper], {
+      // innerHTML: `
+      // <div class="wrap-collabsible">
+      //   <input id="collapsible" class="toggle" type="checkbox">
+      //   <label for="collapsible" class="cdx-collapse-toggle">为什么 coderplanets 的一些问题</label>
+      //   <div class="collapsible-content">
+      //     <div class="content-inner">
+      //       这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。
+      //       QUnit is by calling one of the object that are embedded in JavaScript, and faster JavaScript program could also used with
+      //       its elegant, well documented, and functional programming using JS, HTML pages Modernizr is a popular browsers without
+      //       plug-ins. Test-Driven Development.
+      //     </div>
+      //   </div>
+      // </div>
+      // `
+    });
+    const uid = this.randomStr(4);
 
-    return wrapper;
+    const CollapsibleWrapper = this._make("div", ["wrap-collabsible"]);
+    const InputAnchor = this._make("input", ["toggle"], {
+      type: "checkbox",
+      id: uid
+    });
+
+    const Label = this._make("label", ["cdx-collapse-toggle"]);
+
+    Label.setAttribute("for", uid);
+    Label.innerText = "关于场地的一些问题以及解答";
+
+    const CollapseContentWrapper = this._make("div", ["collapsible-content"]);
+    const CollapseContent = this._make("div", ["content-inner"], {
+      contentEditable: true
+    });
+
+    CollapseContent.innerText = `这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。
+    QUnit is by calling one of the object that are embedded in JavaScript, and faster JavaScript program could also used with
+    its elegant, well documented, and functional programming using JS, HTML pages Modernizr is a popular browsers without
+    plug-ins. Test-Driven Development.`;
+
+    CollapseContentWrapper.appendChild(CollapseContent);
+
+    CollapsibleWrapper.appendChild(InputAnchor);
+    CollapsibleWrapper.appendChild(Label);
+    CollapsibleWrapper.appendChild(CollapseContentWrapper);
+
+    Wrapper.appendChild(CollapsibleWrapper);
+
+    return Wrapper;
   }
 
   /**
