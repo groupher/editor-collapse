@@ -2,7 +2,7 @@
 
 # Collapse Tool for Editor.js
 
-Delimiter Tool for the [Editor.js](https://editorjs.io).
+Collapse Tool for the [Editor.js](https://editorjs.io).
 
 ![collapse-demo](https://user-images.githubusercontent.com/6184465/69914380-c7476080-147e-11ea-8096-309eb5237038.gif)
 
