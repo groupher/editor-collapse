@@ -49,11 +49,15 @@ export default class Collapse {
       wrapper: "cdx-collapse"
     };
 
-    this._data = {
-      type: "pen"
+    this.data = {
+      title: data.title || "",
+      content: data.content || ""
     };
 
     this.defaultIconName = "pen";
+
+    this.TitleInput = null;
+    this.CollapseContent = null;
 
     this._element = this.drawView();
     this.data = data;
@@ -107,22 +111,23 @@ export default class Collapse {
       id: uid
     });
 
-    const Label = this._make("label", ["cdx-collapse-toggle"]);
+    this.TitleInput = this._make("input", ["cdx-collapse-title-input"]);
+    this.TitleInput.value = this.data.title;
+    this.TitleInput.placeholder = "标题内容...";
 
+    const Label = this._make("label", ["cdx-collapse-toggle"]);
     Label.setAttribute("for", uid);
-    Label.innerText = "关于场地的一些问题以及解答";
+    // Label.innerText = "关于场地的一些问题以及解答";
+    Label.appendChild(this.TitleInput);
 
     const CollapseContentWrapper = this._make("div", ["collapsible-content"]);
-    const CollapseContent = this._make("div", ["content-inner"], {
+    this.CollapseContent = this._make("div", ["content-inner"], {
       contentEditable: true
     });
+    this.CollapseContent.innerHTML = this.data.content;
+    this.CollapseContent.setAttribute("placeholder", "填写内容...");
 
-    CollapseContent.innerText = `这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。
-    QUnit is by calling one of the object that are embedded in JavaScript, and faster JavaScript program could also used with
-    its elegant, well documented, and functional programming using JS, HTML pages Modernizr is a popular browsers without
-    plug-ins. Test-Driven Development.`;
-
-    CollapseContentWrapper.appendChild(CollapseContent);
+    CollapseContentWrapper.appendChild(this.CollapseContent);
 
     CollapsibleWrapper.appendChild(InputAnchor);
     CollapsibleWrapper.appendChild(Label);
@@ -149,7 +154,10 @@ export default class Collapse {
    * @public
    */
   save(toolsContent) {
-    return this._data;
+    return {
+      title: this.TitleInput.value,
+      content: this.CollapseContent.innerHTML
+    };
   }
 
   /**
