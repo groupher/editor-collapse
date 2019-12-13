@@ -3,16 +3,8 @@
  */
 import css from "./index.css";
 
-import penIcon from "./icon/pen.svg";
-import coffeeIcon from "./icon/coffee.svg";
-import planetIcon from "./icon/planet.svg";
-import keyboardIcon from "./icon/keyboard.svg";
-import moonIcon from "./icon/moon.svg";
-// import barsaIcon from './icon/barcelona.svg'
-import footIcon from "./icon/foot.svg";
-
 /**
- * Delimiter Block for the Editor.js.
+ * Collapse Block for the Editor.js.
  *
  * @author CodeX (team@ifmo.su)
  * @copyright CodeX 2018
