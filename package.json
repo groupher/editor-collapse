@@ -35,7 +35,7 @@
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "@groupher/editor-utils": "^0.2.16",
+    "@groupher/editor-utils": "0.2.20",
     "svg-inline-loader": "^0.8.0"
   }
 }

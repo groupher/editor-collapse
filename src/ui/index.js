@@ -5,6 +5,8 @@ import css from "../styles/collapse.css";
 import { make } from "@groupher/editor-utils";
 
 import Collapse from "./collapse";
+import Column from "./column";
+
 import { randomStr } from "../helper";
 
 /**
@@ -40,6 +42,7 @@ export default class UI {
     this.data = data;
 
     this.collapse = new Collapse({ data, api });
+    this.column = new Column({ data, api });
   }
 
   /**
@@ -48,7 +51,8 @@ export default class UI {
    * @public
    */
   render() {
-    return this.collapse.render();
+    // return this.collapse.render();
+    return this.column.render();
   }
 
   /**

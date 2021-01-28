@@ -42,6 +42,15 @@ export default class Collapse {
   }
 
   /**
+   * Allow to press Enter inside the Header input
+   * @returns {boolean}
+   * @public
+   */
+  static get enableLineBreaks() {
+    return false;
+  }
+
+  /**
    * Return Tool's view
    * @returns {HTMLDivElement}
    * @public
