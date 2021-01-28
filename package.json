@@ -27,14 +27,15 @@
     "babel-loader": "^8.0.5",
     "babel-preset-env": "^1.7.0",
     "css-loader": "^1.0.0",
-    "style-loader": "^0.21.0",
     "postcss-loader": "^3.0.0",
     "postcss-nested": "^4.1.0",
     "postcss-nested-ancestors": "^2.0.0",
+    "style-loader": "^0.21.0",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
+    "@groupher/editor-utils": "^0.2.16",
     "svg-inline-loader": "^0.8.0"
   }
 }

@@ -11,6 +11,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 5px;
+  font-size: 16px;
+  font-weight: bold;
   font-variant: tabular-nums;
   list-style: none;
   font-feature-settings: "tnum";
@@ -20,36 +22,24 @@
   height: 32px;
   color: rgba(0, 0, 0, 0.65);
   border: none;
-  font-size: 14px;
   line-height: 1.2;
   background-color: transparent;
   background-image: none;
   border-radius: 4px;
-  -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
 
 .cdx-collapse-title-input:hover {
-  background: #f7f7f7;
   background-image: none;
-  border: 1px solid #efebeb;
 }
 
 .cdx-collapse-title-input:focus {
-  background: #f7f7f7;
   background-image: none;
-  border: 1px solid #efebeb;
-}
-
-input[type="checkbox"] {
-  display: none;
 }
 
 .cdx-collapse-toggle {
   display: block;
-  padding: 14px 25px;
-  color: black;
-  background: #f7f7f7;
+  padding: 14px 5px;
   transition: all 0.25s ease-out;
   cursor: pointer;
 }
@@ -57,18 +47,21 @@ input[type="checkbox"] {
 .cdx-collapse-toggle::before {
   content: " ";
   display: inline-block;
-
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
   border-left: 6px solid currentColor;
   vertical-align: middle;
   margin-right: 15px;
+  margin-top: -2px;
+  cursor: pointer;
   transform: translateY(-1px);
-
   transition: transform 0.3s ease-out;
 }
 
-.toggle:checked + .cdx-collapse-toggle::before {
+.cdx-collapse-input-toggle[type="checkbox"] {
+  display: none;
+}
+.cdx-collapse-input-toggle:checked + .cdx-collapse-toggle::before {
   transform: rotate(90deg) translateX(-1px);
 }
 
@@ -78,32 +71,32 @@ input[type="checkbox"] {
   transition: max-height 0.3s cubic-bezier(0.6, -0.28, 0.74, 0.05);
 }
 
-.toggle:checked + .cdx-collapse-toggle + .collapsible-content {
+.cdx-collapse-input-toggle:checked
+  + .cdx-collapse-toggle
+  + .collapsible-content {
   max-height: 350px;
 }
 
-.toggle:checked + .cdx-collapse-toggle {
+.cdx-collapse-input-toggle:checked + .cdx-collapse-toggle {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   font-weight: bold;
-  color: black;
 }
 
 .collapsible-content .content-inner {
-  background: #f7f7f7;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
-  padding: 16px 24px;
+  font-size: 15px;
+  border-left: 1px dashed;
+  border-left-color: #dddfe2;
+  margin-left: 7px;
+  padding: 6px 0;
+  padding-left: 22px;
   line-height: 1.6em;
-}
-
-.collapsible-content .content-inner:focus {
-  border: 1px solid #efebeb;
+  outline: none;
+  cursor: text;
 }
 
 .content-inner[placeholder]:empty:before {
   content: attr(placeholder);
-  color: grey;
   color: grey;
   font-style: italic;
 }

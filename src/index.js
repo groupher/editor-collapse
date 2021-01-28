@@ -2,6 +2,9 @@
  * Build styles
  */
 import css from "./index.css";
+import { make } from "@groupher/editor-utils";
+
+import { randomStr } from "./helper";
 
 /**
  * Collapse Block for the Editor.js.
@@ -18,14 +21,6 @@ import css from "./index.css";
  */
 export default class Collapse {
   /**
-   * Allow Tool to have no content
-   * @return {boolean}
-   */
-  static get contentless() {
-    return true;
-  }
-
-  /**
    * Render plugin`s main Element and fill it with saved data
    *
    * @param {{data: DelimiterData, config: object, api: object}}
@@ -36,17 +31,10 @@ export default class Collapse {
   constructor({ data, config, api }) {
     this.api = api;
 
-    this._CSS = {
-      block: this.api.styles.block,
-      wrapper: "cdx-collapse"
-    };
-
     this.data = {
       title: data.title || "",
-      content: data.content || ""
+      content: data.content || "",
     };
-
-    this.defaultIconName = "pen";
 
     this.TitleInput = null;
     this.CollapseContent = null;
@@ -56,21 +44,20 @@ export default class Collapse {
   }
 
   /**
-   * generate uniq string
-   *
-   * @param {number: number, prefix: string}
-   * @return {string}
-   * @private
+   * @return {object} - Collapse Tool styles
+   * @constructor
    */
-  randomStr(length, prefix = "collapse_") {
-    var result = "";
-    var characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return prefix + result;
+  get CSS() {
+    return {
+      block: this.api.styles.block,
+      wrapper: "cdx-collapse",
+      collapseWrapper: "wrap-collabsible",
+      titleInput: "cdx-collapse-title-input",
+      labelToggle: "cdx-collapse-toggle",
+      inputToggle: "cdx-collapse-input-toggle",
+      content: "collapsible-content",
+      contentInner: "content-inner",
+    };
   }
 
   /**
@@ -79,55 +66,39 @@ export default class Collapse {
    * @private
    */
   drawView() {
-    const Wrapper = this._make("DIV", [this._CSS.block, this._CSS.wrapper], {
-      // innerHTML: `
-      // <div class="wrap-collabsible">
-      //   <input id="collapsible" class="toggle" type="checkbox">
-      //   <label for="collapsible" class="cdx-collapse-toggle">为什么 coderplanets 的一些问题</label>
-      //   <div class="collapsible-content">
-      //     <div class="content-inner">
-      //       这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。这其中的问题不是简单的开源问题，而设计。
-      //       QUnit is by calling one of the object that are embedded in JavaScript, and faster JavaScript program could also used with
-      //       its elegant, well documented, and functional programming using JS, HTML pages Modernizr is a popular browsers without
-      //       plug-ins. Test-Driven Development.
-      //     </div>
-      //   </div>
-      // </div>
-      // `
-    });
-    const uid = this.randomStr(4);
+    const WrapperEl = make("div", [this.CSS.block, this.CSS.wrapper]);
+    const uid = randomStr(4);
 
-    const CollapsibleWrapper = this._make("div", ["wrap-collabsible"]);
-    const InputAnchor = this._make("input", ["toggle"], {
+    const CollapseWrapperEl = make("div", this.collapseWrapper);
+    const CheckEl = make("input", this.CSS.inputToggle, {
       type: "checkbox",
-      id: uid
+      id: uid,
     });
 
-    this.TitleInput = this._make("input", ["cdx-collapse-title-input"]);
+    this.TitleInput = make("input", this.CSS.titleInput);
     this.TitleInput.value = this.data.title;
-    this.TitleInput.placeholder = "标题内容...";
+    this.TitleInput.placeholder = "折叠块标题";
 
-    const Label = this._make("label", ["cdx-collapse-toggle"]);
-    Label.setAttribute("for", uid);
-    // Label.innerText = "关于场地的一些问题以及解答";
-    Label.appendChild(this.TitleInput);
+    const LabelEl = make("label", this.CSS.labelToggle);
+    LabelEl.setAttribute("for", uid);
+    LabelEl.appendChild(this.TitleInput);
 
-    const CollapseContentWrapper = this._make("div", ["collapsible-content"]);
-    this.CollapseContent = this._make("div", ["content-inner"], {
-      contentEditable: true
+    const CollapseContentWrapper = make("div", this.CSS.content);
+    this.CollapseContent = make("div", this.CSS.contentInner, {
+      contentEditable: true,
     });
     this.CollapseContent.innerHTML = this.data.content;
-    this.CollapseContent.setAttribute("placeholder", "填写内容...");
+    this.CollapseContent.setAttribute("placeholder", "折叠块内容");
 
     CollapseContentWrapper.appendChild(this.CollapseContent);
 
-    CollapsibleWrapper.appendChild(InputAnchor);
-    CollapsibleWrapper.appendChild(Label);
-    CollapsibleWrapper.appendChild(CollapseContentWrapper);
+    CollapseWrapperEl.appendChild(CheckEl);
+    CollapseWrapperEl.appendChild(LabelEl);
+    CollapseWrapperEl.appendChild(CollapseContentWrapper);
 
-    Wrapper.appendChild(CollapsibleWrapper);
+    WrapperEl.appendChild(CollapseWrapperEl);
 
-    return Wrapper;
+    return WrapperEl;
   }
 
   /**
@@ -148,7 +119,7 @@ export default class Collapse {
   save(toolsContent) {
     return {
       title: this.TitleInput.value,
-      content: this.CollapseContent.innerHTML
+      content: this.CollapseContent.innerHTML,
     };
   }
 
@@ -162,31 +133,7 @@ export default class Collapse {
   static get toolbox() {
     return {
       icon: `<svg width="19" t="1575117780012" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4865" width="200" height="200"><path d="M512 576l192 192H576v192H448v-192H320l192-192z m192-384H576V0H448v192H320l192 192 192-192z m256 128c0-35.2-28.8-64-64-64h-160l-64 64h192l-128 128h-448l-128-128h192l-64-64H128c-35.2 0-64 28.8-64 64l160 160L64 640c0 35.2 28.8 64 64 64h160l64-64h-192l128-128h448l128 128h-192l64 64H896c35.2 0 64-28.8 64-64l-160-160L960 320z" p-id="4866"></path></svg>`,
-      title: "折叠块 (Collapse)"
+      title: "折叠块",
     };
-  }
-
-  /**
-   * Helper for making Elements with attributes
-   *
-   * @param  {string} tagName           - new Element tag name
-   * @param  {array|string} classNames  - list or name of CSS classname(s)
-   * @param  {Object} attributes        - any attributes
-   * @return {Element}
-   */
-  _make(tagName, classNames = null, attributes = {}) {
-    let el = document.createElement(tagName);
-
-    if (Array.isArray(classNames)) {
-      el.classList.add(...classNames);
-    } else if (classNames) {
-      el.classList.add(classNames);
-    }
-
-    for (let attrName in attributes) {
-      el[attrName] = attributes[attrName];
-    }
-
-    return el;
   }
 }
