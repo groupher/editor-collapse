@@ -2,11 +2,12 @@
  * Build styles
  */
 import css from "../styles/column.css";
-import { make, cutFrom, isLatinString } from "@groupher/editor-utils";
+import { make, cutFrom, isLatinString, strLen } from "@groupher/editor-utils";
 
 import ArrowIcon from "../icon/arrow.svg";
-import { randomStr } from "../helper";
+import ArrowUpIcon from "../icon/arrow_up.svg";
 
+import { getCutLimitCount } from "../helper";
 /**
  * Collapse Block for the Editor.js.
  *
@@ -32,13 +33,41 @@ export default class ColumnCollapse {
   constructor({ data, config, api }) {
     this.api = api;
 
-    this.data = {
+    this._data = {
       title: data.title || "",
-      content: data.content || "",
+      // content: data.content || "",
+      content:
+        data.content ||
+        "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢 end 。",
     };
 
-    this.TitleInput = null;
-    this.CollapseContent = null;
+    this.nodes = {
+      wrapper: make("div", [this.CSS.block, this.CSS.wrapper]),
+      collapseWrapper: make("div", this.CSS.collapseWrapper),
+      contentWrapper: make("div", this.CSS.content),
+      toggleLabel: make("label", this.CSS.labelToggle, {
+        innerHTML: `${ArrowIcon} 展开`,
+        contentEditable: false,
+      }),
+      title: make("div", this.CSS.titleInput, {
+        contentEditable: true,
+        "data-skip-plus-button": true,
+        innerHTML: this._data.title,
+        placeholder: "折叠块标题",
+      }),
+      content: make("span", this.CSS.contentInner, {
+        contentEditable: true,
+        "data-skip-plus-button": true,
+        innerHTML: cutFrom(
+          this._data.content,
+          getCutLimitCount(this._data.content)
+        ),
+        placeholder: "折叠块内容",
+      }),
+    };
+
+    // not collapse at first only when empty
+    this.isCollapsed = false;
 
     this._element = this.drawView();
     this.data = data;
@@ -66,55 +95,122 @@ export default class ColumnCollapse {
    * @private
    */
   drawView() {
-    const WrapperEl = make("div", [this.CSS.block, this.CSS.wrapper]);
-    const uid = randomStr(4);
+    this.nodes.contentWrapper.appendChild(this.nodes.content);
 
-    const CollapseWrapperEl = make("div", this.CSS.collapseWrapper);
+    if (strLen(this._data.content) > getCutLimitCount(this._data.content)) {
+      console.log("ha the fuck ");
+      if (!this.nodes.toggleLabel) {
+        this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
+          contentEditable: false,
+        });
+      }
+      // 必须展开才能编辑
+      this._toggleContentEditable(false);
+      this.nodes.contentWrapper.appendChild(this.nodes.toggleLabel);
+      this._toggleExpandLabel(true, false);
+    }
 
-    this.TitleInput = make("div", this.CSS.titleInput, {
-      contentEditable: true,
-      "data-skip-plus-button": true,
+    this.api.listeners.on(this.nodes.content, "input", (e) => {
+      const inputText = this.nodes.content.innerText;
+      if (strLen(inputText) > getCutLimitCount(inputText)) {
+        if (!this.nodes.toggleLabel) {
+          this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
+            innerHTML: `${ArrowIcon} 展开`,
+            contentEditable: false,
+          });
+        }
+        this.nodes.contentWrapper.appendChild(this.nodes.toggleLabel);
+        // 插入空标签防止 Label 被 focus
+        // this.nodes.content.appendChild(make("span"));
+        // setTimeout()
+        this._toggleExpandLabel(true, true);
+      } else {
+        this._toggleExpandLabel(false, true);
+        this.nodes.toggleLabel.remove();
+      }
     });
-    this.TitleInput.setAttribute("placeholder", "折叠块标题");
 
-    this.TitleInput.value = this.data.title;
-    this.TitleInput.placeholder = "折叠块标题 column";
-
-    // const LabelEl = make("label", this.CSS.labelToggle);
-    // LabelEl.appendChild(this.TitleInput);
-
-    const CollapseContentWrapper = make("div", this.CSS.content);
-    // const tmp =
-    //   "These methods allow you to show Tooltip helper near own elements. Parameters, are the same as in CodeX Tooltips libraryare the same as in CodeX Tooltips library";
-    // const tmp =
-    //   "主打轻快无边界的在、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打轻快无边界的在、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。效率功能和系统优化上的优化也是可圈可点。";
-    const tmp =
-      "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。";
-
-    this.CollapseContent = make("div", this.CSS.contentInner, {
-      contentEditable: true,
-      "data-skip-plus-button": true,
-      innerHTML: cutFrom(tmp, isLatinString(tmp) ? 140 : 50),
+    this.api.listeners.on(this.nodes.toggleLabel, "click", () => {
+      !this.isCollapsed ? this._unFoldContent() : this._foldContent();
     });
-    // this.CollapseContent.innerHTML = this.data.content;
-    this.CollapseContent.setAttribute("placeholder", "折叠块内容");
 
-    const LabelEl = make("label", this.CSS.labelToggle, {
-      innerHTML: `${ArrowIcon} 展开`,
-      contentEditable: false,
-    });
-    this.CollapseContent.appendChild(LabelEl);
+    // this.nodes.content.appendChild(this.nodes.toggleLabel);
     // 插入空标签防止 Label 被 focus
-    this.CollapseContent.appendChild(make("div"));
+    // this.nodes.content.appendChild(make("div"));
 
-    CollapseContentWrapper.appendChild(this.CollapseContent);
+    // this.nodes.contentWrapper.appendChild(this.nodes.content);
 
-    CollapseWrapperEl.appendChild(this.TitleInput);
-    CollapseWrapperEl.appendChild(CollapseContentWrapper);
+    this.nodes.collapseWrapper.appendChild(this.nodes.title);
+    this.nodes.collapseWrapper.appendChild(this.nodes.contentWrapper);
 
-    WrapperEl.appendChild(CollapseWrapperEl);
+    this.nodes.wrapper.appendChild(this.nodes.collapseWrapper);
 
-    return WrapperEl;
+    return this.nodes.wrapper;
+  }
+
+  /**
+   * fold content
+   *
+   * @memberof ColumnCollapse
+   */
+  _foldContent() {
+    this.nodes.content.innerHTML = cutFrom(
+      this._data.content,
+      getCutLimitCount(this._data.content)
+    );
+    this._toggleExpandLabel(true, false);
+    this.nodes.content.appendChild(this.nodes.toggleLabel);
+    this._toggleContentEditable(false);
+  }
+
+  /**
+   * unfold content
+   *
+   * @memberof ColumnCollapse
+   */
+  _unFoldContent() {
+    //
+    this.nodes.content.innerHTML = this._data.content;
+
+    this._toggleExpandLabel(true, true);
+    this.nodes.contentWrapper.appendChild(this.nodes.toggleLabel);
+    this._toggleContentEditable(true);
+  }
+
+  /**
+   * set label visible and up/down info
+   *
+   * @param {Boolean} visible
+   * @param {Boolean}  collapse
+   * @memberof ColumnCollapse
+   */
+  _toggleExpandLabel(visible, collapse) {
+    const el = this.nodes.toggleLabel;
+    el.style.display = visible ? "inline" : "none";
+
+    if (collapse) {
+      el.innerHTML = `${ArrowUpIcon} 收起`;
+      this.isCollapsed = true;
+    } else {
+      el.innerHTML = `${ArrowIcon} 展开`;
+      this.isCollapsed = false;
+    }
+  }
+
+  /**
+   * toggle content editable
+   *
+   * @param {Boolean} editable
+   * @memberof ColumnCollapse
+   */
+  _toggleContentEditable(editable) {
+    if (editable) {
+      this.nodes.content.setAttribute("contentEditable", true);
+      this.nodes.content.style.cursor = "text";
+    } else {
+      this.nodes.content.setAttribute("contentEditable", false);
+      this.nodes.content.style.cursor = "pointer";
+    }
   }
 
   /**
@@ -134,8 +230,8 @@ export default class ColumnCollapse {
    */
   save(toolsContent) {
     return {
-      title: this.TitleInput.value,
-      content: this.CollapseContent.innerHTML,
+      title: this.nodes.title.value,
+      content: this.nodes.content.innerHTML,
     };
   }
 }

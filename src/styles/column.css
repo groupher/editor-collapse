@@ -14,7 +14,7 @@
   box-sizing: border-box;
   padding: 4px;
   padding-left: 0;
-  font-size: 16px;
+  font-size: 1.05em;
   font-weight: bold;
 }
 
@@ -32,10 +32,12 @@
 }
 
 .cdx-column-collapse-content .content-inner {
-  font-size: 15px;
+  font-size: 1em;
   line-height: 1.8em;
+  min-height: 25px;
   outline: none;
   cursor: text;
+  word-break: break-all;
 }
 
 .cdx-column-collapse-content .content-inner[placeholder]:empty:before {
@@ -44,18 +46,24 @@
   font-style: italic;
 }
 
+/* span 标签在设置成 contentEditable 后光标会出现问题, see https://www.google.com/search?sxsrf=ALeKk03wMsY5DAje6aM3Rt52CbE0YBFEKQ%3A1611904360046&ei=aLUTYPC_AtHrwQOloLfQCA&q=contenteditable+span+cursor+not+show&oq=contenteditable+span+cursor+not+show&gs_lcp=CgZwc3ktYWIQAzIFCCEQoAE6BAgAEEc6BAgjECc6AggAOgQIABBDOgQIABAMOgUIABDLAToECAAQHjoGCAAQBRAeOgYIABAIEB46BwghEAoQoAFQvAdY6S1g8TFoAHADeACAAYEEiAHYLZIBDDAuNC4xMC40LjEuMpgBAKABAaoBB2d3cy13aXrIAQjAAQE&sclient=psy-ab&ved=0ahUKEwjwk6vWy8DuAhXRdXAKHSXQDYoQ4dUDCA0&uact=5*/
+.cdx-column-collapse-content .content-inner:focus[placeholder]:empty:before {
+  border-left: 1px solid grey;
+  animation: blink-animation 0.8s infinite;
+  -webkit-animation: blink-animation 0.8s infinite;
+}
+
 .cdx-column-collapse-toggle {
-  width: 45px;
-  line-height: 19px;
-  font-size: 11px;
+  display: inline;
+  width: auto;
+  font-size: 0.7em;
   color: #6f7683;
   background: #eff2f5;
-  padding: 0 6px;
+  padding: 3px 6px;
+  padding-top: 4px;
   margin-left: 5px;
   border-radius: 5px;
   cursor: pointer;
-  display: inline-block;
-  text-align: center;
 }
 
 .cdx-column-collapse-toggle svg {
@@ -64,4 +72,18 @@
   height: 8px;
   margin-right: 2px;
   margin-top: -3px;
+}
+
+@keyframes blink-animation {
+  from {
+    border-left-color: transparent;
+  }
+  to {
+    border-left-color: inherit;
+  }
+}
+@-webkit-keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
 }

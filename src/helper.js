@@ -1,3 +1,5 @@
+import { isLatinString } from "@groupher/editor-utils";
+
 /**
  * generate uniq string
  *
@@ -16,4 +18,12 @@ export const randomStr = (length, prefix = "collapse_") => {
   return prefix + result;
 };
 
-export const holder = 1;
+/**
+ * get cutFrom limit count
+ *
+ * @param {String} str
+ * @return {Number}
+ */
+export const getCutLimitCount = (str) => {
+  return isLatinString(str) ? 140 : 50;
+};
