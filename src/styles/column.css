@@ -6,6 +6,7 @@
 }
 
 .cdx-column-collapse-title {
+  letter-spacing: 1px;
   min-width: 25%;
   max-width: 30%;
   margin-right: 5%;

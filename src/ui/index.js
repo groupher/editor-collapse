@@ -34,12 +34,7 @@ export default class UI {
   constructor({ data, config, api }) {
     this.api = api;
 
-    this.data = {
-      title: data.title || "",
-      content: data.content || "",
-    };
-
-    this.data = data;
+    this._data = data;
 
     this.collapse = new Collapse({ data, api });
     this.column = new Column({ data, api });
@@ -50,9 +45,9 @@ export default class UI {
    * @returns {HTMLDivElement}
    * @public
    */
-  render() {
+  render(data) {
     // return this.collapse.render();
-    return this.column.render();
+    return this.column.render(data);
   }
 
   /**

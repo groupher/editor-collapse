@@ -33,13 +33,7 @@ export default class ColumnCollapse {
   constructor({ data, config, api }) {
     this.api = api;
 
-    this._data = {
-      title: data.title || "",
-      // content: data.content || "",
-      content:
-        data.content ||
-        "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢 end 。",
-    };
+    this._data = data;
 
     this.nodes = {
       wrapper: make("div", [this.CSS.block, this.CSS.wrapper]),
@@ -68,9 +62,6 @@ export default class ColumnCollapse {
 
     // not collapse at first only when empty
     this.isCollapsed = false;
-
-    this._element = this.drawView();
-    this.data = data;
   }
 
   /**
@@ -98,7 +89,6 @@ export default class ColumnCollapse {
     this.nodes.contentWrapper.appendChild(this.nodes.content);
 
     if (strLen(this._data.content) > getCutLimitCount(this._data.content)) {
-      console.log("ha the fuck ");
       if (!this.nodes.toggleLabel) {
         this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
           contentEditable: false,
@@ -112,17 +102,14 @@ export default class ColumnCollapse {
 
     this.api.listeners.on(this.nodes.content, "input", (e) => {
       const inputText = this.nodes.content.innerText;
+      this._data.content = this.nodes.content.innerHTML;
       if (strLen(inputText) > getCutLimitCount(inputText)) {
         if (!this.nodes.toggleLabel) {
           this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
-            innerHTML: `${ArrowIcon} 展开`,
             contentEditable: false,
           });
         }
         this.nodes.contentWrapper.appendChild(this.nodes.toggleLabel);
-        // 插入空标签防止 Label 被 focus
-        // this.nodes.content.appendChild(make("span"));
-        // setTimeout()
         this._toggleExpandLabel(true, true);
       } else {
         this._toggleExpandLabel(false, true);
@@ -133,12 +120,6 @@ export default class ColumnCollapse {
     this.api.listeners.on(this.nodes.toggleLabel, "click", () => {
       !this.isCollapsed ? this._unFoldContent() : this._foldContent();
     });
-
-    // this.nodes.content.appendChild(this.nodes.toggleLabel);
-    // 插入空标签防止 Label 被 focus
-    // this.nodes.content.appendChild(make("div"));
-
-    // this.nodes.contentWrapper.appendChild(this.nodes.content);
 
     this.nodes.collapseWrapper.appendChild(this.nodes.title);
     this.nodes.collapseWrapper.appendChild(this.nodes.contentWrapper);
@@ -169,7 +150,6 @@ export default class ColumnCollapse {
    * @memberof ColumnCollapse
    */
   _unFoldContent() {
-    //
     this.nodes.content.innerHTML = this._data.content;
 
     this._toggleExpandLabel(true, true);
@@ -218,8 +198,9 @@ export default class ColumnCollapse {
    * @returns {HTMLDivElement}
    * @public
    */
-  render() {
-    return this._element;
+  render(data) {
+    this._data = data;
+    return this.drawView();
   }
 
   /**
