@@ -61,7 +61,7 @@ export default class ColumnCollapse {
     };
 
     // not collapse at first only when empty
-    this.isCollapsed = false;
+    this.isFolded = false;
   }
 
   /**
@@ -118,7 +118,7 @@ export default class ColumnCollapse {
     });
 
     this.api.listeners.on(this.nodes.toggleLabel, "click", () => {
-      !this.isCollapsed ? this._unFoldContent() : this._foldContent();
+      !this.isFolded ? this._unFoldContent() : this._foldContent();
     });
 
     this.nodes.collapseWrapper.appendChild(this.nodes.title);
@@ -170,10 +170,10 @@ export default class ColumnCollapse {
 
     if (collapse) {
       el.innerHTML = `${ArrowUpIcon} 收起`;
-      this.isCollapsed = true;
+      this.isFolded = true;
     } else {
       el.innerHTML = `${ArrowIcon} 展开`;
-      this.isCollapsed = false;
+      this.isFolded = false;
     }
   }
 
@@ -190,6 +190,9 @@ export default class ColumnCollapse {
     } else {
       this.nodes.content.setAttribute("contentEditable", false);
       this.nodes.content.style.cursor = "pointer";
+      this.api.listeners.on(this.nodes.content, "click", () => {
+        if (!this.isFolded) this._unFoldContent();
+      });
     }
   }
 

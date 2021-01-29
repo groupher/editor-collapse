@@ -1,7 +1,12 @@
+import { make } from "@groupher/editor-utils";
 /**
  * Build styles
  */
 import css from "./styles/index.css";
+import { MODE } from "./constant";
+
+import RowModeIcon from "./icon/row_mode.svg";
+import ColumnModeIcon from "./icon/column_mode.svg";
 
 import UI from "./ui/index";
 import { randomStr } from "./helper";
@@ -33,6 +38,7 @@ export default class Collapse {
 
     // this._data = data;
     this._data = {
+      mode: "row", // column
       title: "非常劲爆",
       content:
         "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢 end 。",
@@ -51,12 +57,74 @@ export default class Collapse {
   }
 
   /**
+   * @return {object} - Collapse Tool styles
+   * @constructor
+   */
+  get CSS() {
+    return {
+      settingsButton: this.api.styles.settingsButton,
+      settingsButtonActive: this.api.styles.settingsButtonActive,
+    };
+  }
+
+  /**
    * Return Tool's view
    * @returns {HTMLDivElement}
    * @public
    */
   render() {
     return this.ui.render(this._data);
+  }
+
+  /**
+   * render Setting buttons
+   * @public
+   */
+  renderSettings() {
+    const Wrapper = make("div");
+
+    const settings = [
+      {
+        title: "展开模式",
+        action: MODE.ROW,
+        icon: RowModeIcon,
+      },
+      {
+        title: "预览模式",
+        action: MODE.COLUMN,
+        icon: ColumnModeIcon,
+      },
+    ];
+
+    settings.forEach((item) => {
+      const ItemEl = make("div", this.CSS.settingsButton, {
+        innerHTML: item.icon,
+      });
+
+      if (item.action === MODE.ROW) {
+        this._data.mode === MODE.ROW
+          ? ItemEl.classList.add(this.CSS.settingsButtonActive)
+          : ItemEl.classList.remove(this.CSS.settingsButtonActive);
+      }
+
+      if (item.action === MODE.COLUMN) {
+        this._data.mode === MODE.COLUMN
+          ? ItemEl.classList.add(this.CSS.settingsButtonActive)
+          : ItemEl.classList.remove(this.CSS.settingsButtonActive);
+      }
+
+      ItemEl.addEventListener("click", () => {
+        // this.ui.handleSettingAction(item.action);
+      });
+
+      this.api.tooltip.onHover(ItemEl, item.title, {
+        placement: "top",
+      });
+
+      Wrapper.appendChild(ItemEl);
+    });
+
+    return Wrapper;
   }
 
   /**
