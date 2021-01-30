@@ -166,7 +166,7 @@ export default class Collapse {
    */
   save(toolsContent) {
     const data = this.ui.data;
-    console.log("saving data: ", data);
+    console.log("collapse save: ", data);
     return data;
   }
 

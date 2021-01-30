@@ -56,16 +56,7 @@ export default class ColumnCollapse {
     };
 
     this._assignData(data);
-
-    this.api.listeners.on(this.nodes.title, "input", () => {
-      const title = this.nodes.title.innerHTML;
-      setData({ title });
-    });
-
-    this.api.listeners.on(this.nodes.content, "input", () => {
-      const content = this.nodes.content.innerHTML;
-      setData({ content });
-    });
+    this._initListeners(setData);
 
     // not collapse at first only when empty
     this.isFolded = false;
@@ -102,26 +93,20 @@ export default class ColumnCollapse {
   }
 
   /**
-   * Create Tool's view
-   * @return {HTMLElement}
-   * @private
+   * init input / toggle listeners
+   * @param {Function} setData
+   * @memberof ColumnCollapse
    */
-  drawView(data) {
-    this._assignData(data);
-    this.nodes.contentWrapper.appendChild(this.nodes.content);
+  _initListeners(setData) {
+    this.api.listeners.on(this.nodes.title, "input", () => {
+      const title = this.nodes.title.innerHTML;
+      setData({ title });
+    });
 
-    const { content } = this._data;
-    if (strLen(content) > getCutLimitCount(content)) {
-      if (!this.nodes.toggleLabel) {
-        this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
-          contentEditable: false,
-        });
-      }
-      // 必须展开才能编辑
-      this._toggleContentEditable(false);
-      this.nodes.contentWrapper.appendChild(this.nodes.toggleLabel);
-      this._toggleExpandLabel(true, false);
-    }
+    this.api.listeners.on(this.nodes.content, "input", () => {
+      const content = this.nodes.content.innerHTML;
+      setData({ content });
+    });
 
     this.api.listeners.on(this.nodes.content, "input", (e) => {
       const inputText = this.nodes.content.innerText;
@@ -143,6 +128,29 @@ export default class ColumnCollapse {
     this.api.listeners.on(this.nodes.toggleLabel, "click", () => {
       !this.isFolded ? this._unFoldContent() : this._foldContent();
     });
+  }
+
+  /**
+   * Create Tool's view
+   * @return {HTMLElement}
+   * @private
+   */
+  drawView(data) {
+    this._assignData(data);
+    this.nodes.contentWrapper.appendChild(this.nodes.content);
+
+    const { content } = this._data;
+    if (strLen(content) > getCutLimitCount(content)) {
+      if (!this.nodes.toggleLabel) {
+        this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
+          contentEditable: false,
+        });
+      }
+      // 必须展开才能编辑
+      this._toggleContentEditable(false);
+      this.nodes.contentWrapper.appendChild(this.nodes.toggleLabel);
+      this._toggleExpandLabel(true, false);
+    }
 
     this.nodes.collapseWrapper.appendChild(this.nodes.title);
     this.nodes.collapseWrapper.appendChild(this.nodes.contentWrapper);

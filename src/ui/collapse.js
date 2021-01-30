@@ -29,7 +29,7 @@ export default class Collapse {
   constructor({ data, config, api, setData }) {
     this.api = api;
 
-    this.data = data;
+    this._data = data;
 
     this.nodes = {
       title: make("div", this.CSS.titleInput, {
@@ -37,24 +37,20 @@ export default class Collapse {
         placeholder: "折叠块标题",
         "data-skip-plus-button": true,
       }),
+      contentWrapper: make("div", this.CSS.content),
       content: make("div", this.CSS.contentInner, {
         contentEditable: true,
         placeholder: "折叠块内容",
         "data-skip-plus-button": true,
       }),
+
+      toggleLabel: make("label", this.CSS.labelToggle, {
+        "data-skip-plus-button": true,
+      }),
     };
 
     this._assignData(data);
-
-    this.api.listeners.on(this.nodes.title, "input", () => {
-      const title = this.nodes.title.innerHTML;
-      setData({ title });
-    });
-
-    this.api.listeners.on(this.nodes.content, "input", () => {
-      const content = this.nodes.content.innerHTML;
-      setData({ content });
-    });
+    this._initListeners(setData);
 
     this.isFolded = true;
   }
@@ -81,6 +77,56 @@ export default class Collapse {
   }
 
   /**
+   * init input/toggle listeners
+   *
+   * @param {Function} setData
+   * @memberof Collapse
+   */
+  _initListeners(setData) {
+    this.api.listeners.on(this.nodes.title, "input", () => {
+      const title = this.nodes.title.innerHTML;
+      setData({ title });
+    });
+
+    this.api.listeners.on(this.nodes.content, "input", () => {
+      const content = this.nodes.content.innerHTML;
+      setData({ content });
+    });
+
+    this.api.listeners.on(this.nodes.toggleLabel, "click", () => {
+      if (this.isFolded) {
+        this._unFoldContent();
+        // can not set innerHTML when the element is invisible
+        this.nodes.content.innerHTML = this._data.content;
+      } else {
+        this._foldContent();
+      }
+    });
+  }
+
+  /**
+   * fold content
+   *
+   * @memberof ColumnCollapse
+   */
+  _foldContent() {
+    clazz.remove(this.nodes.contentWrapper, this.CSS.contentChecked);
+    clazz.remove(this.nodes.toggleLabel, this.CSS.labelChecked);
+    this.isFolded = true;
+  }
+
+  /**
+   * unfold content
+   *
+   * @memberof ColumnCollapse
+   */
+  _unFoldContent() {
+    clazz.add(this.nodes.contentWrapper, this.CSS.contentChecked);
+    clazz.add(this.nodes.toggleLabel, this.CSS.labelChecked);
+    this.isFolded = false;
+  }
+
+  /**
    * assign data to current title/content input
    *
    * @param {ToolData} data
@@ -102,47 +148,23 @@ export default class Collapse {
   drawView(data) {
     this._assignData(data);
     const WrapperEl = make("div", [this.CSS.block, this.CSS.wrapper]);
-
-    this.nodes.content.innerHTML = this.data.content;
+    this.nodes.content.innerHTML = this._data.content;
 
     const CollapseWrapperEl = make("div", this.CSS.collapseWrapper);
     const HeaderEl = make("div", this.CSS.header);
 
-    const LabelEl = make("label", this.CSS.labelToggle, {
-      "data-skip-plus-button": true,
-    });
-
-    const CollapseContentWrapper = make("div", this.CSS.content);
-
-    this.api.listeners.on(LabelEl, "click", () => {
-      if (this.isFolded) {
-        clazz.add(CollapseContentWrapper, this.CSS.contentChecked);
-        clazz.add(LabelEl, this.CSS.labelChecked);
-        this.isFolded = false;
-        // can not set innerHTML when the element is invisible
-        this.nodes.content.innerHTML = this._data.content;
-      } else {
-        clazz.remove(CollapseContentWrapper, this.CSS.contentChecked);
-        clazz.remove(LabelEl, this.CSS.labelChecked);
-        this.isFolded = true;
-      }
-    });
-
-    HeaderEl.appendChild(LabelEl);
+    HeaderEl.appendChild(this.nodes.toggleLabel);
     HeaderEl.appendChild(this.nodes.title);
 
-    CollapseContentWrapper.appendChild(this.nodes.content);
+    this.nodes.contentWrapper.appendChild(this.nodes.content);
 
     CollapseWrapperEl.appendChild(HeaderEl);
-    CollapseWrapperEl.appendChild(CollapseContentWrapper);
+    CollapseWrapperEl.appendChild(this.nodes.contentWrapper);
 
     WrapperEl.appendChild(CollapseWrapperEl);
 
     return WrapperEl;
   }
-
-  // setData() {
-  // }
 
   /**
    * Extract Tool's data from the view

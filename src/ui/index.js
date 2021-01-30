@@ -36,7 +36,7 @@ export default class UI {
   constructor({ data, config, api, setData }) {
     this.api = api;
 
-    this._data = data;
+    this.data = data;
 
     this.collapse = new Collapse({ data, api, setData });
     this.column = new Column({ data, api, setData });
@@ -48,7 +48,7 @@ export default class UI {
    * @public
    */
   drawView(data) {
-    this._data = data;
+    this.data = data;
     return data.mode === MODE.ROW
       ? this.collapse.drawView(data)
       : this.column.drawView(data);
