@@ -197,15 +197,13 @@ export default class ColumnCollapse {
    */
   _toggleExpandLabel(visible, collapse) {
     const el = this.nodes.toggleLabel;
+    el.style.display = visible ? "inline-flex" : "none";
 
     if (collapse) {
       el.innerHTML = `${ArrowUpIcon} 收起`;
-      el.style.display = visible ? "inline-block" : "none";
       this.isFolded = true;
     } else {
       el.innerHTML = `${ArrowIcon} 展开`;
-      // CSS hack. the label style is strange when not do so, wired
-      el.style.display = visible ? "inline" : "none";
       this.isFolded = false;
     }
   }

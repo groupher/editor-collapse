@@ -9,7 +9,7 @@ import RowModeIcon from "./icon/row_mode.svg";
 import ColumnModeIcon from "./icon/column_mode.svg";
 
 import UI from "./ui/index";
-import { randomStr } from "./helper";
+import { isValidData } from "./helper";
 
 /**
  * Collapse Block for the Editor.js.
@@ -36,20 +36,21 @@ export default class Collapse {
   constructor({ data, config, api }) {
     this.api = api;
 
-    // this._data = data;
-    this._data = {
-      mode: "column", // row, column
-      title: "非常劲爆",
-      content:
-        "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢 end 。",
+    const defaultData = {
+      mode: MODE.ROW,
+      title: "",
+      content: "",
     };
 
-    this.element = null;
+    this._data = isValidData(data) ? data : defaultData;
+
     this.ui = new UI({
       data: this._data,
       api,
       setData: this.setData.bind(this),
     });
+
+    this.element = null;
   }
 
   setData(data) {

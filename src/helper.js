@@ -1,4 +1,6 @@
-import { isLatinString } from "@groupher/editor-utils";
+import { isLatinString, isString } from "@groupher/editor-utils";
+
+import { MODE } from "./constant";
 
 /**
  * generate uniq string
@@ -26,4 +28,20 @@ export const randomStr = (length, prefix = "collapse_") => {
  */
 export const getCutLimitCount = (str) => {
   return isLatinString(str) ? 140 : 50;
+};
+
+/**
+ * check if the given data is valid
+ *
+ * @param {ToolData} data
+ * @return {Boolean}
+ */
+export const isValidData = (data) => {
+  return (
+    (data.mode === MODE.ROW || data.mode === MODE.COLUMN) &&
+    data.title &&
+    isString(data.title) &&
+    data.content &&
+    isString(data.content)
+  );
 };

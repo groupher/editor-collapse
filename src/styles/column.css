@@ -62,8 +62,11 @@
 }
 
 .cdx-column-collapse-toggle {
-  display: inline;
+  display: inline-flex;
   width: auto;
+  height: 12px;
+  align-items: center;
+  justify-content: center;
   font-size: 0.7em;
   color: #6f7683;
   background: #eff2f5;
@@ -77,8 +80,7 @@
   fill: #6f7683;
   width: 8px;
   height: 8px;
-  margin-right: 2px;
-  margin-top: -3px;
+  margin-right: 4px;
 }
 
 @keyframes blink-animation {
