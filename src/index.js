@@ -44,6 +44,7 @@ export default class Collapse {
         "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢 end 。",
     };
 
+    this.element = null;
     this.ui = new UI({ data: this._data, api });
   }
 
@@ -73,7 +74,33 @@ export default class Collapse {
    * @public
    */
   render() {
-    return this.ui.render(this._data);
+    this.element = this.ui.drawView(this._data);
+    return this.element;
+  }
+
+  /**
+   * reRender based on new data
+   * @public
+   *
+   * @return {HTMLDivElement}
+   */
+  reRender(data) {
+    this._data = data;
+    this.replaceElement(this.ui.drawView(this._data));
+  }
+
+  /**
+   * replace element wrapper with new html element
+   * @param {HTMLElement} node
+   */
+  replaceElement(node) {
+    console.log("replace element: ", node);
+
+    this.element.replaceWith(node);
+    this.element = node;
+
+    this.api.tooltip.hide();
+    this.api.toolbar.close();
   }
 
   /**
@@ -105,16 +132,15 @@ export default class Collapse {
         this._data.mode === MODE.ROW
           ? ItemEl.classList.add(this.CSS.settingsButtonActive)
           : ItemEl.classList.remove(this.CSS.settingsButtonActive);
-      }
-
-      if (item.action === MODE.COLUMN) {
+      } else {
         this._data.mode === MODE.COLUMN
           ? ItemEl.classList.add(this.CSS.settingsButtonActive)
           : ItemEl.classList.remove(this.CSS.settingsButtonActive);
       }
 
       ItemEl.addEventListener("click", () => {
-        // this.ui.handleSettingAction(item.action);
+        this._data.mode = item.action;
+        this.reRender(this._data);
       });
 
       this.api.tooltip.onHover(ItemEl, item.title, {

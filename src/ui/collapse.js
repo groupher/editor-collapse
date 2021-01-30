@@ -39,7 +39,6 @@ export default class Collapse {
     this.TitleInput = null;
     this.CollapseContent = null;
 
-    this._element = this.drawView();
     this.data = data;
   }
 
@@ -99,15 +98,6 @@ export default class Collapse {
     WrapperEl.appendChild(CollapseWrapperEl);
 
     return WrapperEl;
-  }
-
-  /**
-   * Return Tool's view
-   * @returns {HTMLDivElement}
-   * @public
-   */
-  render() {
-    return this._element;
   }
 
   /**

@@ -4,6 +4,8 @@
 import css from "../styles/collapse.css";
 import { make } from "@groupher/editor-utils";
 
+import { MODE } from "../constant";
+
 import Collapse from "./collapse";
 import Column from "./column";
 
@@ -45,9 +47,10 @@ export default class UI {
    * @returns {HTMLDivElement}
    * @public
    */
-  render(data) {
-    // return this.collapse.render();
-    return this.column.render(data);
+  drawView(data) {
+    return data.mode === MODE.ROW
+      ? this.collapse.drawView(data)
+      : this.column.drawView(data);
   }
 
   /**

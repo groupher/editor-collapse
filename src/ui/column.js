@@ -85,7 +85,8 @@ export default class ColumnCollapse {
    * @return {HTMLElement}
    * @private
    */
-  drawView() {
+  drawView(data) {
+    this._data = data;
     this.nodes.contentWrapper.appendChild(this.nodes.content);
 
     if (strLen(this._data.content) > getCutLimitCount(this._data.content)) {
@@ -194,16 +195,6 @@ export default class ColumnCollapse {
         if (!this.isFolded) this._unFoldContent();
       });
     }
-  }
-
-  /**
-   * Return Tool's view
-   * @returns {HTMLDivElement}
-   * @public
-   */
-  render(data) {
-    this._data = data;
-    return this.drawView();
   }
 
   /**
