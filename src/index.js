@@ -38,7 +38,7 @@ export default class Collapse {
 
     // this._data = data;
     this._data = {
-      mode: "row", // column
+      mode: "column", // row, column
       title: "非常劲爆",
       content:
         "主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢，效率功能和系统优化上的优化也是可圈可点。主打「轻快无边界」的 ColorOS 7 在 UI、动效和声效体验构建上精雕细琢 end 。",
@@ -166,7 +166,7 @@ export default class Collapse {
    */
   save(toolsContent) {
     const data = this.ui.data;
-    console.log("collapse save: ", data);
+    // console.log("collapse save: ", data);
     return data;
   }
 
