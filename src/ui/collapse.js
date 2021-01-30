@@ -2,9 +2,7 @@
  * Build styles
  */
 import css from "../styles/collapse.css";
-import { make } from "@groupher/editor-utils";
-
-import { randomStr } from "../helper";
+import { make, clazz } from "@groupher/editor-utils";
 
 /**
  * Collapse Block for the Editor.js.
@@ -28,18 +26,37 @@ export default class Collapse {
    *   config - user config for Tool
    *   api - Editor.js API
    */
-  constructor({ data, config, api }) {
+  constructor({ data, config, api, setData }) {
     this.api = api;
 
-    this.data = {
-      title: data.title || "",
-      content: data.content || "",
+    this.data = data;
+
+    this.nodes = {
+      title: make("div", this.CSS.titleInput, {
+        contentEditable: true,
+        placeholder: "折叠块标题",
+        "data-skip-plus-button": true,
+      }),
+      content: make("div", this.CSS.contentInner, {
+        contentEditable: true,
+        placeholder: "折叠块内容",
+        "data-skip-plus-button": true,
+      }),
     };
 
-    this.TitleInput = null;
-    this.CollapseContent = null;
+    this._assignData(data);
 
-    this.data = data;
+    this.api.listeners.on(this.nodes.title, "input", () => {
+      const title = this.nodes.title.innerHTML;
+      setData({ title });
+    });
+
+    this.api.listeners.on(this.nodes.content, "input", () => {
+      const content = this.nodes.content.innerHTML;
+      setData({ content });
+    });
+
+    this.isFolded = true;
   }
 
   /**
@@ -51,12 +68,30 @@ export default class Collapse {
       block: this.api.styles.block,
       wrapper: "cdx-collapse",
       collapseWrapper: "cdx-collapse-wrapper",
+      header: "cdx-collapse-header",
       titleInput: "cdx-collapse-title-input",
       labelToggle: "cdx-collapse-toggle",
       inputToggle: "cdx-collapse-input-toggle",
       content: "cdx-collapse-content",
       contentInner: "content-inner",
+
+      contentChecked: "cdx-collapse-content-checked",
+      labelChecked: "cdx-collapse-toggle-checked",
     };
+  }
+
+  /**
+   * assign data to current title/content input
+   *
+   * @param {ToolData} data
+   * @memberof ColumnCollapse
+   */
+  _assignData(data) {
+    this._data = data;
+    const { title, content } = this._data;
+
+    this.nodes.title.innerHTML = title;
+    this.nodes.content.innerHTML = content;
   }
 
   /**
@@ -64,41 +99,50 @@ export default class Collapse {
    * @return {HTMLElement}
    * @private
    */
-  drawView() {
+  drawView(data) {
+    this._assignData(data);
     const WrapperEl = make("div", [this.CSS.block, this.CSS.wrapper]);
-    const uid = randomStr(4);
 
-    const CollapseWrapperEl = make("div", this.collapseWrapper);
-    const CheckEl = make("input", this.CSS.inputToggle, {
-      type: "checkbox",
-      id: uid,
+    this.nodes.content.innerHTML = this.data.content;
+
+    const CollapseWrapperEl = make("div", this.CSS.collapseWrapper);
+    const HeaderEl = make("div", this.CSS.header);
+
+    const LabelEl = make("label", this.CSS.labelToggle, {
+      "data-skip-plus-button": true,
     });
-
-    this.TitleInput = make("input", this.CSS.titleInput);
-    this.TitleInput.value = this.data.title;
-    this.TitleInput.placeholder = "折叠块标题";
-
-    const LabelEl = make("label", this.CSS.labelToggle);
-    LabelEl.setAttribute("for", uid);
-    LabelEl.appendChild(this.TitleInput);
 
     const CollapseContentWrapper = make("div", this.CSS.content);
-    this.CollapseContent = make("div", this.CSS.contentInner, {
-      contentEditable: true,
+
+    this.api.listeners.on(LabelEl, "click", () => {
+      if (this.isFolded) {
+        clazz.add(CollapseContentWrapper, this.CSS.contentChecked);
+        clazz.add(LabelEl, this.CSS.labelChecked);
+        this.isFolded = false;
+        // can not set innerHTML when the element is invisible
+        this.nodes.content.innerHTML = this._data.content;
+      } else {
+        clazz.remove(CollapseContentWrapper, this.CSS.contentChecked);
+        clazz.remove(LabelEl, this.CSS.labelChecked);
+        this.isFolded = true;
+      }
     });
-    this.CollapseContent.innerHTML = this.data.content;
-    this.CollapseContent.setAttribute("placeholder", "折叠块内容");
 
-    CollapseContentWrapper.appendChild(this.CollapseContent);
+    HeaderEl.appendChild(LabelEl);
+    HeaderEl.appendChild(this.nodes.title);
 
-    CollapseWrapperEl.appendChild(CheckEl);
-    CollapseWrapperEl.appendChild(LabelEl);
+    CollapseContentWrapper.appendChild(this.nodes.content);
+
+    CollapseWrapperEl.appendChild(HeaderEl);
     CollapseWrapperEl.appendChild(CollapseContentWrapper);
 
     WrapperEl.appendChild(CollapseWrapperEl);
 
     return WrapperEl;
   }
+
+  // setData() {
+  // }
 
   /**
    * Extract Tool's data from the view
@@ -108,8 +152,8 @@ export default class Collapse {
    */
   save(toolsContent) {
     return {
-      title: this.TitleInput.value,
-      content: this.CollapseContent.innerHTML,
+      title: this.nodes.title.innerHTML,
+      content: this.nodes.content.innerHTML,
     };
   }
 }

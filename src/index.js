@@ -45,7 +45,15 @@ export default class Collapse {
     };
 
     this.element = null;
-    this.ui = new UI({ data: this._data, api });
+    this.ui = new UI({
+      data: this._data,
+      api,
+      setData: this.setData.bind(this),
+    });
+  }
+
+  setData(data) {
+    this._data = { ...this._data, ...data };
   }
 
   /**
@@ -84,8 +92,7 @@ export default class Collapse {
    *
    * @return {HTMLDivElement}
    */
-  reRender(data) {
-    this._data = data;
+  reRender() {
     this.replaceElement(this.ui.drawView(this._data));
   }
 
@@ -94,8 +101,6 @@ export default class Collapse {
    * @param {HTMLElement} node
    */
   replaceElement(node) {
-    console.log("replace element: ", node);
-
     this.element.replaceWith(node);
     this.element = node;
 
@@ -160,10 +165,9 @@ export default class Collapse {
    * @public
    */
   save(toolsContent) {
-    return {
-      // title: this.TitleInput.value,
-      // content: this.CollapseContent.innerHTML,
-    };
+    const data = this.ui.data;
+    console.log("saving data: ", data);
+    return data;
   }
 
   /**

@@ -30,7 +30,7 @@ export default class ColumnCollapse {
    *   config - user config for Tool
    *   api - Editor.js API
    */
-  constructor({ data, config, api }) {
+  constructor({ data, config, api, setData }) {
     this.api = api;
 
     this._data = data;
@@ -46,19 +46,26 @@ export default class ColumnCollapse {
       title: make("div", this.CSS.titleInput, {
         contentEditable: true,
         "data-skip-plus-button": true,
-        innerHTML: this._data.title,
         placeholder: "折叠块标题",
       }),
       content: make("span", this.CSS.contentInner, {
         contentEditable: true,
         "data-skip-plus-button": true,
-        innerHTML: cutFrom(
-          this._data.content,
-          getCutLimitCount(this._data.content)
-        ),
         placeholder: "折叠块内容",
       }),
     };
+
+    this._assignData(data);
+
+    this.api.listeners.on(this.nodes.title, "input", () => {
+      const title = this.nodes.title.innerHTML;
+      setData({ title });
+    });
+
+    this.api.listeners.on(this.nodes.content, "input", () => {
+      const content = this.nodes.content.innerHTML;
+      setData({ content });
+    });
 
     // not collapse at first only when empty
     this.isFolded = false;
@@ -81,15 +88,30 @@ export default class ColumnCollapse {
   }
 
   /**
+   * assign data to current title/content input
+   *
+   * @param {ToolData} data
+   * @memberof ColumnCollapse
+   */
+  _assignData(data) {
+    this._data = data;
+    const { title, content } = this._data;
+
+    this.nodes.title.innerHTML = title;
+    this.nodes.content.innerHTML = cutFrom(content, getCutLimitCount(content));
+  }
+
+  /**
    * Create Tool's view
    * @return {HTMLElement}
    * @private
    */
   drawView(data) {
-    this._data = data;
+    this._assignData(data);
     this.nodes.contentWrapper.appendChild(this.nodes.content);
 
-    if (strLen(this._data.content) > getCutLimitCount(this._data.content)) {
+    const { content } = this._data;
+    if (strLen(content) > getCutLimitCount(content)) {
       if (!this.nodes.toggleLabel) {
         this.nodes.toggleLabel = make("label", this.CSS.labelToggle, {
           contentEditable: false,
@@ -205,7 +227,7 @@ export default class ColumnCollapse {
    */
   save(toolsContent) {
     return {
-      title: this.nodes.title.value,
+      title: this.nodes.title.innerHTML,
       content: this.nodes.content.innerHTML,
     };
   }

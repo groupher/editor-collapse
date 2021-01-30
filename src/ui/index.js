@@ -33,13 +33,13 @@ export default class UI {
    *   config - user config for Tool
    *   api - Editor.js API
    */
-  constructor({ data, config, api }) {
+  constructor({ data, config, api, setData }) {
     this.api = api;
 
     this._data = data;
 
-    this.collapse = new Collapse({ data, api });
-    this.column = new Column({ data, api });
+    this.collapse = new Collapse({ data, api, setData });
+    this.column = new Column({ data, api, setData });
   }
 
   /**
@@ -48,6 +48,7 @@ export default class UI {
    * @public
    */
   drawView(data) {
+    this._data = data;
     return data.mode === MODE.ROW
       ? this.collapse.drawView(data)
       : this.column.drawView(data);
@@ -60,9 +61,6 @@ export default class UI {
    * @public
    */
   save(toolsContent) {
-    return {
-      // title: this.TitleInput.value,
-      // content: this.CollapseContent.innerHTML,
-    };
+    return this._data.mode === MODE.ROW ? this.collapse.data : this.column.data;
   }
 }
