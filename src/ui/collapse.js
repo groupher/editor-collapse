@@ -146,23 +146,23 @@ export default class Collapse {
    */
   drawView(data) {
     this._assignData(data);
-    const WrapperEl = make("div", [this.CSS.block, this.CSS.wrapper]);
+    const wrapperEl = make("div", [this.CSS.block, this.CSS.wrapper]);
     this.nodes.content.innerHTML = this._data.content;
 
-    const CollapseWrapperEl = make("div", this.CSS.collapseWrapper);
-    const HeaderEl = make("div", this.CSS.header);
+    const collapseWrapperEl = make("div", this.CSS.collapseWrapper);
+    const headerEl = make("div", this.CSS.header);
 
-    HeaderEl.appendChild(this.nodes.toggleLabel);
-    HeaderEl.appendChild(this.nodes.title);
+    headerEl.appendChild(this.nodes.toggleLabel);
+    headerEl.appendChild(this.nodes.title);
 
     this.nodes.contentWrapper.appendChild(this.nodes.content);
 
-    CollapseWrapperEl.appendChild(HeaderEl);
-    CollapseWrapperEl.appendChild(this.nodes.contentWrapper);
+    collapseWrapperEl.appendChild(headerEl);
+    collapseWrapperEl.appendChild(this.nodes.contentWrapper);
 
-    WrapperEl.appendChild(CollapseWrapperEl);
+    wrapperEl.appendChild(collapseWrapperEl);
 
-    return WrapperEl;
+    return wrapperEl;
   }
 
   /**

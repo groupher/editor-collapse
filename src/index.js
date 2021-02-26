@@ -130,30 +130,30 @@ export default class Collapse {
     ];
 
     settings.forEach((item) => {
-      const ItemEl = make("div", this.CSS.settingsButton, {
+      const itemEl = make("div", this.CSS.settingsButton, {
         innerHTML: item.icon,
       });
 
       if (item.action === MODE.ROW) {
         this._data.mode === MODE.ROW
-          ? ItemEl.classList.add(this.CSS.settingsButtonActive)
-          : ItemEl.classList.remove(this.CSS.settingsButtonActive);
+          ? itemEl.classList.add(this.CSS.settingsButtonActive)
+          : itemEl.classList.remove(this.CSS.settingsButtonActive);
       } else {
         this._data.mode === MODE.COLUMN
-          ? ItemEl.classList.add(this.CSS.settingsButtonActive)
-          : ItemEl.classList.remove(this.CSS.settingsButtonActive);
+          ? itemEl.classList.add(this.CSS.settingsButtonActive)
+          : itemEl.classList.remove(this.CSS.settingsButtonActive);
       }
 
-      ItemEl.addEventListener("click", () => {
+      itemEl.addEventListener("click", () => {
         this._data.mode = item.action;
         this.reRender(this._data);
       });
 
-      this.api.tooltip.onHover(ItemEl, item.title, {
+      this.api.tooltip.onHover(itemEl, item.title, {
         placement: "top",
       });
 
-      Wrapper.appendChild(ItemEl);
+      Wrapper.appendChild(itemEl);
     });
 
     return Wrapper;
