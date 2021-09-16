@@ -165,13 +165,7 @@ export default class Collapse {
     return wrapperEl;
   }
 
-  /**
-   * Extract Tool's data from the view
-   * @param {HTMLDivElement} toolsContent - Paragraph tools rendered view
-   * @returns {DelimiterData} - saved data
-   * @public
-   */
-  save(toolsContent) {
+  get data() {
     return {
       title: this.nodes.title.innerHTML,
       content: this.nodes.content.innerHTML,

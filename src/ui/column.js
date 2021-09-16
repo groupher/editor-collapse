@@ -2,7 +2,7 @@
  * Build styles
  */
 import css from "../styles/column.css";
-import { make, cutFrom, isLatinString, strLen } from "@groupher/editor-utils";
+import { make, cutFrom, strLen } from "@groupher/editor-utils";
 
 import ArrowIcon from "../icon/arrow.svg";
 import ArrowUpIcon from "../icon/arrow_up.svg";
@@ -227,13 +227,7 @@ export default class ColumnCollapse {
     }
   }
 
-  /**
-   * Extract Tool's data from the view
-   * @param {HTMLDivElement} toolsContent - Paragraph tools rendered view
-   * @returns {DelimiterData} - saved data
-   * @public
-   */
-  save(toolsContent) {
+  get data() {
     return {
       title: this.nodes.title.innerHTML,
       content: this.nodes.content.innerHTML,

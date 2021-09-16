@@ -36,7 +36,7 @@ export default class UI {
   constructor({ data, config, api, setData }) {
     this.api = api;
 
-    this.data = data;
+    this._data = data;
 
     this.collapse = new Collapse({ data, api, setData });
     this.column = new Column({ data, api, setData });
@@ -48,19 +48,13 @@ export default class UI {
    * @public
    */
   drawView(data) {
-    this.data = data;
+    this._data = data;
     return data.mode === MODE.ROW
       ? this.collapse.drawView(data)
       : this.column.drawView(data);
   }
 
-  /**
-   * Extract Tool's data from the view
-   * @param {HTMLDivElement} toolsContent - Paragraph tools rendered view
-   * @returns {DelimiterData} - saved data
-   * @public
-   */
-  save(toolsContent) {
+  get data() {
     return this._data.mode === MODE.ROW ? this.collapse.data : this.column.data;
   }
 }
