@@ -50,8 +50,9 @@ export default class Collapse {
     };
 
     this._assignData(data);
-    this._initListeners(setData);
+    this._initListeners();
 
+    this.setData = setData;
     this.isFolded = true;
   }
 
@@ -84,22 +85,16 @@ export default class Collapse {
   _initListeners(setData) {
     this.api.listeners.on(this.nodes.title, "input", () => {
       const title = this.nodes.title.innerHTML;
-      setData({ title });
+      this.setData({ title });
     });
 
     this.api.listeners.on(this.nodes.content, "input", () => {
       const content = this.nodes.content.innerHTML;
-      setData({ content });
+      this.setData({ content });
     });
 
     this.api.listeners.on(this.nodes.toggleLabel, "click", () => {
-      if (this.isFolded) {
-        this._unFoldContent();
-        // can not set innerHTML when the element is invisible
-        this.nodes.content.innerHTML = this._data.content;
-      } else {
-        this._foldContent();
-      }
+      this.isFolded ? this._unFoldContent() : this._foldContent();
     });
   }
 
@@ -166,9 +161,12 @@ export default class Collapse {
   }
 
   get data() {
-    return {
-      title: this.nodes.title.innerHTML,
-      content: this.nodes.content.innerHTML,
-    };
+    const title = this.nodes.title.innerHTML;
+    const content = this.nodes.content.innerHTML;
+    const data = { title, content };
+
+    this.setData(data);
+
+    return data;
   }
 }
