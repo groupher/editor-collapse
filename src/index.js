@@ -113,51 +113,51 @@ export default class Collapse {
    * render Setting buttons
    * @public
    */
-  renderSettings() {
-    const Wrapper = make("div");
+  // renderSettings() {
+  //   const Wrapper = make("div");
 
-    const settings = [
-      {
-        title: "展开模式",
-        action: MODE.ROW,
-        icon: RowModeIcon,
-      },
-      {
-        title: "预览模式",
-        action: MODE.COLUMN,
-        icon: ColumnModeIcon,
-      },
-    ];
+  //   const settings = [
+  //     {
+  //       title: "展开模式",
+  //       action: MODE.ROW,
+  //       icon: RowModeIcon,
+  //     },
+  //     {
+  //       title: "预览模式",
+  //       action: MODE.COLUMN,
+  //       icon: ColumnModeIcon,
+  //     },
+  //   ];
 
-    settings.forEach((item) => {
-      const itemEl = make("div", this.CSS.settingsButton, {
-        innerHTML: item.icon,
-      });
+  //   settings.forEach((item) => {
+  //     const itemEl = make("div", this.CSS.settingsButton, {
+  //       innerHTML: item.icon,
+  //     });
 
-      if (item.action === MODE.ROW) {
-        this._data.mode === MODE.ROW
-          ? itemEl.classList.add(this.CSS.settingsButtonActive)
-          : itemEl.classList.remove(this.CSS.settingsButtonActive);
-      } else {
-        this._data.mode === MODE.COLUMN
-          ? itemEl.classList.add(this.CSS.settingsButtonActive)
-          : itemEl.classList.remove(this.CSS.settingsButtonActive);
-      }
+  //     if (item.action === MODE.ROW) {
+  //       this._data.mode === MODE.ROW
+  //         ? itemEl.classList.add(this.CSS.settingsButtonActive)
+  //         : itemEl.classList.remove(this.CSS.settingsButtonActive);
+  //     } else {
+  //       this._data.mode === MODE.COLUMN
+  //         ? itemEl.classList.add(this.CSS.settingsButtonActive)
+  //         : itemEl.classList.remove(this.CSS.settingsButtonActive);
+  //     }
 
-      itemEl.addEventListener("click", () => {
-        this._data.mode = item.action;
-        this.reRender(this._data);
-      });
+  //     itemEl.addEventListener("click", () => {
+  //       this._data.mode = item.action;
+  //       this.reRender(this._data);
+  //     });
 
-      this.api.tooltip.onHover(itemEl, item.title, {
-        placement: "top",
-      });
+  //     this.api.tooltip.onHover(itemEl, item.title, {
+  //       placement: "top",
+  //     });
 
-      Wrapper.appendChild(itemEl);
-    });
+  //     Wrapper.appendChild(itemEl);
+  //   });
 
-    return Wrapper;
-  }
+  //   return Wrapper;
+  // }
 
   /**
    * Extract Tool's data from the view
