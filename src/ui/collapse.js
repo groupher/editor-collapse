@@ -32,8 +32,7 @@ export default class Collapse {
     this._data = data;
 
     this.nodes = {
-      title: make("div", this.CSS.title, {
-        contentEditable: true,
+      title: make("input", this.CSS.title, {
         placeholder: "折叠块标题",
         "data-skip-plus-button": true,
       }),
